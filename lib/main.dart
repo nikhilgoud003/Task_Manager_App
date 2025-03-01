@@ -72,7 +72,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search tasks',
+                hintText: 'Search for assigned tasks',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search),
               ),
@@ -134,7 +134,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Task'),
+          title: Text('Assign Task'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
