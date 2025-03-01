@@ -9,7 +9,7 @@ class TaskManagerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Task Manager',
+      title: 'Tasks Manager',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -17,6 +17,7 @@ class TaskManagerApp extends StatelessWidget {
     );
   }
 }
+
 class Task {
   String name;
   bool isCompleted;
@@ -39,7 +40,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
   void _addTask() {
     if (_taskController.text.isNotEmpty) {
       setState(() {
-        _tasks.add(Task(name: _taskController.text, priority: _selectedPriority));
+        _tasks
+            .add(Task(name: _taskController.text, priority: _selectedPriority));
         _taskController.clear();
       });
     }
@@ -56,11 +58,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
       _tasks.removeAt(index);
     });
   }
-   @override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Manager'),
+        title: Text('Tasks Manager'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -83,7 +86,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 itemCount: _tasks.length,
                 itemBuilder: (context, index) {
                   if (_searchController.text.isNotEmpty &&
-                      !_tasks[index].name.toLowerCase().contains(_searchController.text.toLowerCase())) {
+                      !_tasks[index]
+                          .name
+                          .toLowerCase()
+                          .contains(_searchController.text.toLowerCase())) {
                     return Container();
                   }
                   return Card(
@@ -97,7 +103,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       title: Text(
                         _tasks[index].name,
                         style: TextStyle(
-                          decoration: _tasks[index].isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                          decoration: _tasks[index].isCompleted
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
                         ),
                       ),
                       subtitle: Text('Priority: ${_tasks[index].priority}'),
@@ -120,3 +128,55 @@ class _TaskListScreenState extends State<TaskListScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+
+  void _showAddTaskDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Task'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _taskController,
+                decoration: InputDecoration(
+                  hintText: 'Enter task name',
+                ),
+              ),
+              SizedBox(height: 10),
+              DropdownButton<String>(
+                value: _selectedPriority,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedPriority = newValue!;
+                  });
+                },
+                items: ['Low', 'Medium', 'High']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _addTask();
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
