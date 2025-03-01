@@ -56,3 +56,67 @@ class _TaskListScreenState extends State<TaskListScreen> {
       _tasks.removeAt(index);
     });
   }
+   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task Manager'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search tasks',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (query) {
+                setState(() {});
+              },
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _tasks.length,
+                itemBuilder: (context, index) {
+                  if (_searchController.text.isNotEmpty &&
+                      !_tasks[index].name.toLowerCase().contains(_searchController.text.toLowerCase())) {
+                    return Container();
+                  }
+                  return Card(
+                    child: ListTile(
+                      leading: Checkbox(
+                        value: _tasks[index].isCompleted,
+                        onChanged: (value) {
+                          _toggleTaskCompletion(index);
+                        },
+                      ),
+                      title: Text(
+                        _tasks[index].name,
+                        style: TextStyle(
+                          decoration: _tasks[index].isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                        ),
+                      ),
+                      subtitle: Text('Priority: ${_tasks[index].priority}'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteTask(index),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddTaskDialog(context),
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
